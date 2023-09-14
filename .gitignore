@@ -1,0 +1,25 @@
+# holds audio files for dev
+workspace/
+
+# Ignore compiled Python files
+*.pyc
+
+# Ignore virtual environment files
+venv/
+
+# Ignore log files
+*.log
+
+# Ignore database files
+*.db
+
+# Ignore cache files
+__pycache__/
+
+# Ignore IDE files
+.vscode/
+.idea/
+
+# Ignore build files
+build/
+dist/
