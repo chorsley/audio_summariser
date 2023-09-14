@@ -7,6 +7,8 @@ import openai
 import tiktoken
 import youtube_dl
 from loguru import logger
+from pydub import AudioSegment, silence
+
 
 # Initialize OpenAI API
 openai.api_key = environ["OPENAI_API_KEY"]
@@ -76,15 +78,20 @@ def summarize_text(text: str, user_prompt: str) -> str:
     # print(response)
     return response.choices[0]["message"]["content"].strip()
 
-def create_transcript_from_audio_file(filepath: str) -> str:
-    # use openai's whisper API to make a transcript
-    audio_file= open(filepath, "rb")
-    transcript = openai.Audio.transcribe("whisper-1", audio_file)
+def create_transcript_from_audio_file(audio_chunk_filenames: list[str]) -> str:
+    """
+    Return the filename of a Whisper transcript file created from a list of audio files.
+    """
+
+    transcript_filename = tempfile.NamedTemporaryFile().name + ".txt"
 
     # write the transcript to a file
-    transcript_filename = tempfile.NamedTemporaryFile().name + ".txt"
     with open(transcript_filename, "w") as file:
-        file.write(transcript.get("text"))
+        # use openai's whisper API to make a transcript
+        for filepath in audio_chunk_filenames:
+            audio_file= open(filepath, "rb")
+            transcript = openai.Audio.transcribe("whisper-1", audio_file)
+            file.write(transcript.get("text"))
 
     return transcript_filename
 
@@ -113,10 +120,34 @@ def create_audio_file_from_yt_url(url: str) -> str:
     return audio_file_name
 
 
+def split_audio_file_into_chunks(filepath: str) -> list[str]:
+    """
+    Split an audio file into chunks.
+    """
+
+    chunk_paths = []
+
+    sound1 = AudioSegment.from_file(filepath)
+    step_size = 60*1000*5
+    #chunks = silence.split_on_silence(sound1, min_silence_len=1000, seek_step=step_size, silence_thresh=-40)
+    # split into 15 minute chunks - not so nice that audio is cut off mid-sentence.
+    # split_on_silence needs more control over maximum chunk size.
+    chunks = sound1[::1000 * 60 * 15]
+
+    #for i, chunk in enumerate([sound1[:step_size]] + chunks):
+    for i, chunk in enumerate(chunks):
+        audio_file_name = f"{tempfile.NamedTemporaryFile().name}_{i}.mp3"
+        with open(audio_file_name, "wb") as f:
+            chunk.export(f, format="mp3")
+        chunk_paths.append(audio_file_name)
+
+    return chunk_paths
+
 def main():
     parser = argparse.ArgumentParser(description="Process a file path or YouTube URL.")
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("--file", type=str, help="Path to the file to process.")
+    group.add_argument("--transcript_file", type=str, help="Transcript file to process.")
+    group.add_argument("--audio_file", type=str, help="Audio file to process.")
     group.add_argument("--url", type=str, help="YouTube URL to process.")
     parser.add_argument("--debug", action="store_true", help="Enable debug logging.")
     parser.add_argument("--prompt", type=str, help="Prompt to use for GPT-4.")
@@ -130,10 +161,15 @@ def main():
 
     if args.url:
         audio_filename = create_audio_file_from_yt_url(args.url)
-        logger.debug(f"Created audio file from YouTube URL: {audio_filename}")
-        text_filename = create_transcript_from_audio_file(audio_filename)
+        audio_chunk_filenames = split_audio_file_into_chunks(audio_filename)
+        logger.debug(f"Created audio file chunks from YouTube URL: {audio_chunk_filenames}")
+        text_filename = create_transcript_from_audio_file(audio_chunk_filenames)
+    elif args.audio_file:
+        audio_chunk_filenames = split_audio_file_into_chunks(args.audio_file)
+        logger.debug(f"Created audio file from file: {audio_chunk_filenames}")
+        text_filename = create_transcript_from_audio_file(audio_chunk_filenames)
     else:
-        text_filename = args.file
+        text_filename = args.transcript_file
     logger.debug(f"Processing {text_filename}")
 
     with open(text_filename, 'r') as f:
