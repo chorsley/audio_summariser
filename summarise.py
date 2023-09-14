@@ -42,7 +42,7 @@ def main():
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--transcript_file", type=str, help="Transcript file to process.")
     group.add_argument("--audio_file", type=str, help="Audio file to process.")
-    group.add_argument("--url", type=str, help="YouTube URL to process.")
+    group.add_argument("--yt_url", type=str, help="YouTube URL to process.")
     parser.add_argument("--debug", action="store_true", help="Enable debug logging.")
     parser.add_argument("--prompt", type=str, help="Prompt to use for GPT-4.")
     args = parser.parse_args()
