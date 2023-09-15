@@ -6,7 +6,9 @@ import openai
 from pydub import AudioSegment, silence
 
 # Initialize OpenAI API
-openai.api_key = environ["OPENAI_API_KEY"]
+from .config import OPENAI_API_KEY
+
+openai.api_key = OPENAI_API_KEY
 
 class YTLogger(object):
     def debug(self, msg):
