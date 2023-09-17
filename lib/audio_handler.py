@@ -21,6 +21,11 @@ class YTLogger(object):
         print(msg)
 
 
+def get_openai_whisper_transcript(audio_filepath: str) -> dict:
+    with open(audio_filepath, "rb") as audio_file:
+        return openai.Audio.transcribe("whisper-1", audio_file)
+
+
 class AudioHandler:
     @staticmethod
     def download_from_yt(url: str) -> str:
@@ -57,7 +62,6 @@ class AudioHandler:
         transcript_filename = tempfile.NamedTemporaryFile().name + ".txt"
         with open(transcript_filename, "w") as file:
             for filepath in audio_chunk_filenames:
-                with open(filepath, "rb") as audio_file:
-                    transcript = openai.Audio.transcribe("whisper-1", audio_file)
-                    file.write(transcript.get("text"))
+                transcript = get_openai_whisper_transcript(filepath)
+                file.write(str(transcript.get("text")))
         return transcript_filename

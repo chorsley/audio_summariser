@@ -21,7 +21,7 @@ class Dict2Class(object):
             setattr(self, key, my_dict[key])
 
 
-basic_openai_completion_mock_response = {
+basic_openai_gpt_completion_mock_response = {
   "choices": [
     {
       "finish_reason": "stop",
@@ -43,10 +43,14 @@ basic_openai_completion_mock_response = {
   }
 }
 
+basic_openai_whisper_completion_mock_response = {
+  "text": "This is a test transcript."
+}
+
 
 class TestGetStringTokens(unittest.TestCase):
     def test_summarise_input_transcript(self):
-        with patch("lib.llm_summariser.gpt_summarise", return_value=Dict2Class(basic_openai_completion_mock_response)):
+        with patch("lib.llm_summariser.gpt_summarise", return_value=Dict2Class(basic_openai_gpt_completion_mock_response)):
             args = argparse.Namespace(
                 input_transcript="tests/test.txt",
                 debug=False,
@@ -61,16 +65,17 @@ class TestGetStringTokens(unittest.TestCase):
             assert summaries[0] == "This is a test transcript."
 
     def test_summarise_input_audio_file(self):
-        with patch("lib.llm_summariser.gpt_summarise", return_value=Dict2Class(basic_openai_completion_mock_response)):
-            args = argparse.Namespace(
-                input_transcript=None,
-                debug=False,
-                prompt=None,
-                model="gpt-3.5-turbo",
-                input_audio_file="tests/Armstrong_Small_Step.ogg",
-                input_youtube_url=None
-            )
-            summaries = summarise(args)
-            print(summaries)
-            assert len(summaries) == 1
-            assert summaries[0] == "This is a test transcript."
+        with patch("lib.audio_handler.get_openai_whisper_transcript", return_value=basic_openai_whisper_completion_mock_response):
+             with patch("lib.llm_summariser.gpt_summarise", return_value=Dict2Class(basic_openai_gpt_completion_mock_response)):
+                args = argparse.Namespace(
+                    input_transcript=None,
+                    debug=False,
+                    prompt=None,
+                    model="gpt-3.5-turbo",
+                    input_audio_file="tests/Armstrong_Small_Step.ogg",
+                    input_youtube_url=None
+                )
+                summaries = summarise(args)
+                print(summaries)
+                assert len(summaries) == 1
+                assert summaries[0] == "This is a test transcript."
