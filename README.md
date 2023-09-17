@@ -20,14 +20,37 @@ pip install git+https://github.com/chorsley/audio_summariser
 
 ## Usage
 
-Summarise can be used to summarise text files, audio files, and YouTube URLs. The summarisation process is the same for all three types of input, but the methods for processing the input are different.
+```markdown
+`$ export OPENAI_API_KEY=<your key>`
 
-### Summarising text files
+`$ audio-summarise --input-youtube-url https://www.youtube.com/watch?v=3VEkzweBJPM`
+# Summary of Transcript:
+## Introduction
+- The speaker claims to have received information that changed the course of their life six years ago.
+- Allegations are made that the US government killed over 12 billion birds through the use of poisonous toxins dropped from airplanes over a period of 40 years.
+- The purpose of killing the birds was to replace them with surveillance drone replicas disguised as birds.
+- The speaker acknowledges that this may sound absurd but asks the audience to keep an open mind and be respectful.
+...
+
+`$ python scripts/run.py --input-audio tests/Armstrong_Small_Step.ogg --prompt "What is this audio? How is it historically significant?"`
+# Summary of the Audio Transcript: "I'm going to step off the LM now. That's one small step for a man, one giant leap for mankind."
+## Historical Significance of the Audio
+
+- The audio is a famous quote from astronaut Neil Armstrong during the Apollo 11 mission to the moon.
+- It marks a significant moment in human history, as it was the first time a human being set foot on the moon.
+- Neil Armstrong's words symbolize the achievement of the entire human race, emphasizing the monumental nature of the moment.
+...
+
+`$ audio-summarise --input-transcript mytranscript.txt`
+...
+```
+
+Summarise can be used to summarise text files, audio files, and YouTube URLs. The summarisation process is the same for all three types of input, but the methods for processing the input are different.
 
 ```
 $ export OPENAI_API_KEY=<your key>
-$ summarise --help
-usage: summarise.py [-h]
+$ audio-summarise --help
+usage: audio-summariser [-h]
                     (--input-transcript INPUT_TRANSCRIPT | --input-audio-file INPUT_AUDIO_FILE | --input-youtube-url INPUT_YOUTUBE_URL)
                     [--debug] [--prompt PROMPT] [--model {gpt-3.5-turbo,gpt-4}]
 

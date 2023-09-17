@@ -35,7 +35,6 @@ def main():
 
     summaries = summarise(args)
 
-    print("Summary:")
     for summary in summaries:
         print(f"{summary}")
 
