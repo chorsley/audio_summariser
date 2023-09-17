@@ -15,7 +15,7 @@ It also supports summarising audio and text of any length (your OpenAI hard budg
 To install Summarise, you can use pip:
 
 ```bash
-pip install https://github.com/chorsley/audio_summariser
+pip install git+https://github.com/chorsley/audio_summariser
 ```
 
 ## Usage
