@@ -67,7 +67,6 @@ class TestGetStringTokens(unittest.TestCase):
                 input_youtube_url=None
             )
             summaries = summarise(args)
-            print(summaries)
             assert len(summaries) == 1
             assert summaries[0] == "This is a test transcript."
 
@@ -83,7 +82,6 @@ class TestGetStringTokens(unittest.TestCase):
                     input_youtube_url=None
                 )
                 summaries = summarise(args)
-                print(summaries)
                 assert len(summaries) == 1
                 assert summaries[0] == "This is a test transcript."
 
@@ -104,6 +102,5 @@ class TestGetStringTokens(unittest.TestCase):
                         input_youtube_url="https://www.youtube.com/watch?v=2JlVqfC8-UI"
                     )
                     summaries = summarise(args)
-                    print(summaries)
                     assert len(summaries) == 1
                     assert summaries[0] == "This is a test transcript."

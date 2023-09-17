@@ -13,5 +13,5 @@ MAX_TOKENS = {
 try:
     OPENAI_API_KEY = environ["OPENAI_API_KEY"]
 except KeyError:
-    print("Please set the OPENAI_API_KEY environment variable.")
+    sys.stderr.write("Please set the OPENAI_API_KEY environment variable.")
     sys.exit(1)

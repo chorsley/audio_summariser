@@ -26,7 +26,7 @@ class YTLogger():
         pass
 
     def error(self, msg):
-        print(msg)
+        logger.error(msg)
 
 
 def youtube_dl_to_file(url: str) -> str:

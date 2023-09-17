@@ -27,7 +27,6 @@ def gpt_summarise(model, prompt, text, max_tokens) -> openai.ChatCompletion:
         ],
         max_tokens=max_tokens,
     )
-    print(type(response))
     return response
 
 

@@ -61,6 +61,4 @@ class Tokenizer:
                 current_chunk = paragraph + ". "
         if current_chunk:
             chunks.append(current_chunk)
-        for chunk in chunks:
-            print(Tokenizer.count(chunk))
         return chunks

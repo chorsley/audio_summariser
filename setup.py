@@ -16,7 +16,7 @@ with open(req_file, "r", encoding="utf-8") as f:
     requirements = f.read().splitlines()
 
 setup(
-    name="Audio Summariser",
+    name="audio_summariser",
     version="0.1.0",
     packages=find_packages(),
     install_requires=requirements,
