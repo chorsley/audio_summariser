@@ -5,6 +5,8 @@ import youtube_dl
 import openai
 from pydub import AudioSegment, silence
 
+from .logger import logger
+
 # Initialize OpenAI API
 from .config import OPENAI_API_KEY
 
@@ -21,6 +23,25 @@ class YTLogger(object):
         print(msg)
 
 
+def youtube_dl_to_file(url: str) -> str:
+    audio_file_name = tempfile.NamedTemporaryFile().name + ".mp3"
+    ydl_opts = {
+    'keepvideo': True,
+    'format': 'bestaudio/best',
+    'outtmpl': target_audio_file_name,
+    'postprocessors': [{
+        'key': 'FFmpegExtractAudio',
+        'preferredcodec': 'mp3',
+        'preferredquality': '128'
+    }],
+    'logger': YTLogger()
+    }
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        ydl.download([url])
+
+    return audio_file_name
+
+
 def get_openai_whisper_transcript(audio_filepath: str) -> dict:
     with open(audio_filepath, "rb") as audio_file:
         return openai.Audio.transcribe("whisper-1", audio_file)
@@ -29,24 +50,12 @@ def get_openai_whisper_transcript(audio_filepath: str) -> dict:
 class AudioHandler:
     @staticmethod
     def download_from_yt(url: str) -> str:
-        audio_file_name = tempfile.NamedTemporaryFile().name + ".mp3"
-        ydl_opts = {
-            'keepvideo': True,
-            'format': 'bestaudio/best',
-            'outtmpl': audio_file_name,
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '128'
-            }],
-            'logger': YTLogger()
-        }
-        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([url])
+        audio_file_name = youtube_dl_to_file(url)
         return audio_file_name
 
     @staticmethod
     def split_into_chunks(filepath: str) -> list[str]:
+        logger.debug(f"Splitting audio file {filepath} into chunks...")
         chunk_paths = []
         sound = AudioSegment.from_file(filepath)
         chunks = sound[::1000 * 60 * 15]

@@ -55,6 +55,6 @@ class Summarizer:
             prompt += user_prompt
 
         response = gpt_summarise(model, prompt, text, MAX_TOKENS[model] - Tokenizer.count(prompt) - Tokenizer.count(text))
-        print(f"RESPONSE: {response}")
+        logger.debug(f"RESPONSE: {response}")
 
         return response.choices[0]["message"]["content"].strip()

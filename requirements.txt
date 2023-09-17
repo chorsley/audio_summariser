@@ -1,4 +1,4 @@
-git+https://github.com/ytdl-org/youtube-dl.git
+youtube-dl @ git+https://github.com/ytdl-org/youtube-dl.git@2021.12.17#egg=youtube-dl
 openai>=0.28.0
 tiktoken>=0.4.0
 loguru>=0.7.2
