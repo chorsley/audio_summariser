@@ -23,7 +23,7 @@ setup(
     include_package_data=True,
     entry_points={
         'console_scripts': [
-            'audio_summarise=summarise.py:main',
+            'audio-summarise=scripts.run:main',
         ],
     },
     author="Chris Horsley",

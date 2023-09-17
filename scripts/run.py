@@ -3,6 +3,11 @@ Main runner for the summariser.
 """
 
 import argparse
+import sys
+import os
+
+# Add the path to the lib directory
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from lib.logger import logger
 from lib.runner import summarise
