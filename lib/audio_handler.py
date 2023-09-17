@@ -28,7 +28,7 @@ def youtube_dl_to_file(url: str) -> str:
     ydl_opts = {
     'keepvideo': True,
     'format': 'bestaudio/best',
-    'outtmpl': target_audio_file_name,
+    'outtmpl': audio_file_name,
     'postprocessors': [{
         'key': 'FFmpegExtractAudio',
         'preferredcodec': 'mp3',

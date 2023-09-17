@@ -1,3 +1,5 @@
+.env
+
 # holds audio files for dev
 workspace/
 
