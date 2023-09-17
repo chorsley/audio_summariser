@@ -1,5 +1,4 @@
 import unittest
-import re
 
 import sys
 import os
@@ -11,6 +10,9 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from lib.tokenizer import Tokenizer
 
 class TestGetStringTokens(unittest.TestCase):
+    """
+    Unit tests for the get_last_n_string_tokens function.
+    """
 
     def test_get_last_token(self):
         text = "This is a test string."

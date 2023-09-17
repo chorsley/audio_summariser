@@ -1,4 +1,6 @@
-from os import environ
+"""
+Handles summarising text using LLMs (e.g. GPT) and other methods.
+"""
 
 import openai
 
@@ -13,23 +15,38 @@ openai.api_key = OPENAI_API_KEY
 
 PREV_CHUNK_TOKENS = 100
 
-
-def gpt_summarise(model, prompt, text, max_tokens):
-        response = openai.ChatCompletion.create(
-            model=model,
-            messages=[
-                {"role": "system", "content": prompt},
-                {"role": "user", "content": text}
-            ],
-            max_tokens=max_tokens,
-        )
-
-        return response
+def gpt_summarise(model, prompt, text, max_tokens) -> openai.ChatCompletion:
+    """
+    Send prompt and text to OpenAI API and return the response.
+    """
+    response = openai.ChatCompletion.create(
+        model=model,
+        messages=[
+            {"role": "system", "content": prompt},
+            {"role": "user", "content": text}
+        ],
+        max_tokens=max_tokens,
+    )
+    print(type(response))
+    return response
 
 
 class Summarizer:
+    """
+    Class for summarising text using various methods including OpenAI API.
+    """
+
+    def __init__(self):
+        pass
+
     @staticmethod
-    def summarize(text: str, user_prompt: str, model: str, chunk_num: int=0, prev_chunk: str="") -> str:
+    def summarize(text: str, user_prompt: str, model: str,
+                  chunk_num: int=0, prev_chunk: str="") -> str:
+        """
+        Summarise text. Can also handle a previous chunk of text to re-establish context.
+
+        TODO: could add other summarising methods later like local llama.
+        """
         prompt = """
           You are an audio transcription summariser bot.
           Break down the following text into a series of insightful bullet points summarising the main detail of this transcript.
@@ -54,7 +71,9 @@ class Summarizer:
         if user_prompt:
             prompt += user_prompt
 
-        response = gpt_summarise(model, prompt, text, MAX_TOKENS[model] - Tokenizer.count(prompt) - Tokenizer.count(text))
+        token_limit = MAX_TOKENS[model] - Tokenizer.count(prompt) - Tokenizer.count(text)
+
+        response = gpt_summarise(model, prompt, text, token_limit)
         logger.debug(f"RESPONSE: {response}")
 
         return response.choices[0]["message"]["content"].strip()

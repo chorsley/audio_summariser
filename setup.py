@@ -1,6 +1,9 @@
-from setuptools import setup, find_packages
+"""
+Setup script for the audio_summariser package.
+"""
+
 import os
-import pkg_resources
+from setuptools import setup, find_packages
 
 # Determine the path to this file (setup.py)
 here = os.path.abspath(os.path.dirname(__file__))
@@ -9,7 +12,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 req_file = os.path.join(here, 'requirements.txt')
 
 # Read in the requirements.txt file
-with open(req_file) as f:
+with open(req_file, "r", encoding="utf-8") as f:
     requirements = f.read().splitlines()
 
 setup(

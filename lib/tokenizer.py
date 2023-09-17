@@ -1,13 +1,22 @@
+"""
+Used for counting and chunking text.
+"""
+
 import re
-import sys
 
 import tiktoken
 
 from .config import MAX_TOKENS
 
 class Tokenizer:
+    """
+    Class for tokenizing text and determining the number of tokens in a string.
+    """
     @staticmethod
     def count(text: str) -> int:
+        """
+        Count the number of tokens in a string.
+        """
         encoding = tiktoken.encoding_for_model("gpt-4")
         return len(encoding.encode(text))
 
@@ -39,6 +48,9 @@ class Tokenizer:
 
     @staticmethod
     def chunk(text: str, model: str) -> list[str]:
+        """
+        Chunk text into smaller chunks of text based on model.
+        """
         chunks = []
         current_chunk = ""
         for paragraph in text.split(". "):

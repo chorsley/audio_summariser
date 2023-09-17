@@ -2,7 +2,7 @@ import sys
 import os
 import argparse
 import unittest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 # Add the path to the lib directory
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -14,9 +14,14 @@ from lib.audio_handler import AudioHandler
 from lib.tokenizer import Tokenizer
 
 class Dict2Class(object):
-      
+    """
+    Convert a dictionary to a class.
+
+    Lets us mock the OpenAI response based on API JSON.
+    """
+
     def __init__(self, my_dict):
-          
+
         for key in my_dict:
             setattr(self, key, my_dict[key])
 

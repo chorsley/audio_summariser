@@ -1,4 +1,9 @@
+"""
+Values shared across the project.
+"""
+
 from os import environ
+import sys
 
 MAX_TOKENS = {
     "gpt-4": 8000,
@@ -9,4 +14,4 @@ try:
     OPENAI_API_KEY = environ["OPENAI_API_KEY"]
 except KeyError:
     print("Please set the OPENAI_API_KEY environment variable.")
-    exit(1)
+    sys.exit(1)
