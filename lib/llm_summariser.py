@@ -11,7 +11,21 @@ from .config import OPENAI_API_KEY
 
 openai.api_key = OPENAI_API_KEY
 
-# Initialize OpenAI API
+PREV_CHUNK_TOKENS = 100
+
+
+def gpt_summarise(model, prompt, text, max_tokens):
+        response = openai.ChatCompletion.create(
+            model=model,
+            messages=[
+                {"role": "system", "content": prompt},
+                {"role": "user", "content": text}
+            ],
+            max_tokens=max_tokens,
+        )
+
+        return response
+
 
 class Summarizer:
     @staticmethod
@@ -27,8 +41,11 @@ class Summarizer:
 
         if chunk_num != 0:
             prompt += f"""
-            This is a continuation of a previous transcription chunk so factor that in too and assume we're continuing. That chunk ended like this:
-            {prev_chunk.split(" ")[-100]}
+            Between the "---" markers below is the last section of the previous transcription chunk.  Just use this to re-establish context.
+            Don't repeat the points made in this previous chunk but factor them in to summarising the new text chunk. That previous chunk ended like this:
+            ---
+            {Tokenizer.get_last_n_string_tokens(prev_chunk, PREV_CHUNK_TOKENS, whole_words=True)}
+            ---
             """
 
 
@@ -37,12 +54,7 @@ class Summarizer:
         if user_prompt:
             prompt += user_prompt
 
-        response = openai.ChatCompletion.create(
-            model=model,
-            messages=[
-                {"role": "system", "content": prompt},
-                {"role": "user", "content": text}
-            ],
-            max_tokens=int(MAX_TOKENS[model] - Tokenizer.count(prompt) - Tokenizer.count(text)),
-        )
+        response = gpt_summarise(model, prompt, text, MAX_TOKENS[model] - Tokenizer.count(prompt) - Tokenizer.count(text))
+        print(f"RESPONSE: {response}")
+
         return response.choices[0]["message"]["content"].strip()
