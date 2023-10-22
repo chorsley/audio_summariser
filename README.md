@@ -23,7 +23,7 @@ pip install git+https://github.com/chorsley/audio_summariser
 ```markdown
 `$ export OPENAI_API_KEY=<your key>`
 
-`$ audio-summarise --input-youtube-url https://www.youtube.com/watch?v=3VEkzweBJPM`
+`$ audio-summarise https://www.youtube.com/watch?v=3VEkzweBJPM`
 # Summary of Transcript:
 ## Introduction
 - The speaker claims to have received information that changed the course of their life six years ago.
@@ -32,7 +32,7 @@ pip install git+https://github.com/chorsley/audio_summariser
 - The speaker acknowledges that this may sound absurd but asks the audience to keep an open mind and be respectful.
 ...
 
-`$ python scripts/run.py --input-audio tests/Armstrong_Small_Step.ogg --prompt "What is this audio? How is it historically significant?"`
+`$ python scripts/run.py tests/Armstrong_Small_Step.ogg --prompt "What is this audio? How is it historically significant?"`
 # Summary of the Audio Transcript: "I'm going to step off the LM now. That's one small step for a man, one giant leap for mankind."
 ## Historical Significance of the Audio
 
@@ -41,7 +41,7 @@ pip install git+https://github.com/chorsley/audio_summariser
 - Neil Armstrong's words symbolize the achievement of the entire human race, emphasizing the monumental nature of the moment.
 ...
 
-`$ audio-summarise --input-transcript mytranscript.txt`
+`$ audio-summarise mytranscript.txt`
 ...
 ```
 
@@ -50,24 +50,23 @@ Summarise can be used to summarise text files, audio files, and YouTube URLs. Th
 ```
 $ export OPENAI_API_KEY=<your key>
 $ audio-summarise --help
-usage: audio-summariser [-h]
-                    (--input-transcript INPUT_TRANSCRIPT | --input-audio-file INPUT_AUDIO_FILE | --input-youtube-url INPUT_YOUTUBE_URL)
-                    [--debug] [--prompt PROMPT] [--model {gpt-3.5-turbo,gpt-4}]
+usage: audio-summarise [-h] [--debug] [--prompt PROMPT] [--model {gpt-3.5-turbo,gpt-4}]
+              [--force-content-type {youtube-url,url,audio-file,text-file}]
+              input-location
 
-Process a file path or YouTube URL.
+Process a file path or URL.
+
+positional arguments:
+  input-location        File path or URL to process.
 
 options:
   -h, --help            show this help message and exit
-  --input-transcript INPUT_TRANSCRIPT
-                        Transcript file to process.
-  --input-audio-file INPUT_AUDIO_FILE
-                        Audio file to process.
-  --input-youtube-url INPUT_YOUTUBE_URL
-                        YouTube URL to process.
   --debug               Enable debug logging.
-  --prompt PROMPT       Custom, supplementary prompt to use for GPT model (e.g. "Make it understandable for a 5 year old.")
+  --prompt PROMPT       Prompt to use for GPT model
   --model {gpt-3.5-turbo,gpt-4}
                         OpenAI model to use for summarisation.
+  --force-content-type {youtube-url,url,audio-file,text-file}
+                        Force the content type to be one of these options.
 ```
 
 # Contributing
